@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selection App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Page 1 -->
+    <div id="page1">
+        <input type="text" id="name" placeholder="Enter Name">
+        <div id="suggestions"></div>
+        <button onclick="toPage2()">Next</button>
+    </div>
+    
+    <!-- Page 2 -->
+    <div id="page2">
+        <div class="selection-box" id="beer">
+            <h3>Beer</h3>
+        </div>
+        <div class="selection-box" id="wine">
+            <h3>Wine</h3>
+        </div>
+        <div class="selection-box" id="spirits">
+            <h3>Spirits / Liquor</h3>
+        </div>
+        <button onclick="submitForm()">Submit</button>
+    </div>
+    
+    <!-- Page 3 -->
+    <div id="page3">
+        <canvas id="beerChart"></canvas>
+        <canvas id="wineChart"></canvas>
+        <canvas id="spiritChart"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="scripts.js"></script>
+</body>
+</html>

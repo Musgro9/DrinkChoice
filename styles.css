@@ -1,0 +1,40 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.selection-box {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+h3 {
+    text-align: center;
+}
+
+#suggestions {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    position: absolute;
+    width: fit-content;
+    z-index: 10;
+}
+
+#suggestions div {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+#suggestions div:hover {
+    background-color: #e9e9e9;
+}
+
+#page2, #page3 {
+    display: none;
+}
+
+canvas {
+    max-width: 400px;
+    height: auto;
+    margin: 20px;
+}
