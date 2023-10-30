@@ -8,10 +8,16 @@
 </head>
 <body>
     <!-- Page 1 -->
-    <div id="page1">
-        <input type="text" id="name" placeholder="Enter Name">
-        <div id="suggestions"></div>
-        <button onclick="toPage2()">Next</button>
+    <div class="center-wrapper" id="page1">
+        <div class="bubble">
+            <h1>Musgrove Wedding Drink of Choice</h1>
+            <p>Type in your name and go to the next page. Please remember only the people on the guest list can fill this out and do not select a name that is not yours because you all only get one to fill out.</p>
+        </div>
+        <div class="bubble input-section">
+            <input type="text" id="name" placeholder="Enter Name">
+            <button onclick="toPage2()">Next</button>
+            <div id="suggestions"></div>
+        </div>
     </div>
     
     <!-- Page 2 -->
@@ -31,11 +37,14 @@
     <!-- Page 3 -->
     <div id="page3">
         <canvas id="beerChart"></canvas>
+        <div id="beerWinner"></div>
         <canvas id="wineChart"></canvas>
+        <div id="wineWinner"></div>
         <canvas id="spiritChart"></canvas>
+        <div id="spiritWinner"></div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="scripts.js"></script>
+    <script src="index.js"></script>
 </body>
 </html>
