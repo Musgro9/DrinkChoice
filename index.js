@@ -13,10 +13,16 @@ const counts = {
     spirits: new Array(10).fill(0)
 };
 
+let isNameValid = false;
+
 document.getElementById('name').addEventListener('input', function() {
     const searchTerm = this.value.toLowerCase();
     const suggestionsBox = document.getElementById('suggestions');
     suggestionsBox.innerHTML = '';
+
+    isNameValid = false;
+
+    if (!searchTerm) return;
     
     names.forEach(name => {
         if (name.toLowerCase().includes(searchTerm)) {
@@ -25,6 +31,7 @@ document.getElementById('name').addEventListener('input', function() {
             div.onclick = function() {
                 document.getElementById('name').value = name;
                 suggestionsBox.innerHTML = '';
+                isNameValid = true;
             }
             suggestionsBox.appendChild(div);
         }
@@ -32,9 +39,12 @@ document.getElementById('name').addEventListener('input', function() {
 });
 
 function toPage2() {
-    // Add checkboxes dynamically here if you want
-    document.getElementById('page1').style.display = 'none';
-    document.getElementById('page2').style.display = 'block';
+    if (isNameValid) {
+        document.getElementById('page1').style.display = 'none';
+        document.getElementById('page2').style.display = 'block';
+    } else {
+        alert('Please select a valid name from the list.');
+    }
 }
 
 function submitForm() {
@@ -62,10 +72,35 @@ function submitForm() {
     document.getElementById('page3').style.display = 'block';
 
     updateCharts();
+
+    // Save the counts to localStorage after updating them
+    localStorage.setItem('beerCounts', JSON.stringify(counts.beer));
+    localStorage.setItem('wineCounts', JSON.stringify(counts.wine));
+    localStorage.setItem('spiritsCounts', JSON.stringify(counts.spirits));
+    setTimeout(updateCharts, 100);
+}
+
+function displayWinner(category, counts, elementId) {
+    const maxCount = Math.max(...counts);
+    const winnerIndex = counts.indexOf(maxCount);
+    const total = counts.reduce((acc, val) => acc + val, 0);
+    const percentage = ((maxCount / total) * 100).toFixed(2);
+    
+    const winnerName = categories[category][winnerIndex];
+    
+    document.getElementById(elementId).innerText = `Current Favorite: ${winnerName} at ${percentage}%`;
 }
 
 function updateCharts() {
     // Update the pie charts with the new counts
+
+    function calculatePercentage(count, totalCount) {
+        return ((count / totalCount) * 100).toFixed(2);
+    }
+
+    const beerTotal = counts.beer.reduce((acc, val) => acc + val, 0);
+    const wineTotal = counts.wine.reduce((acc, val) => acc + val, 0);
+    const spiritsTotal = counts.spirits.reduce((acc, val) => acc + val, 0);
 
     const beerCtx = document.getElementById('beerChart').getContext('2d');
     new Chart(beerCtx, {
@@ -76,6 +111,17 @@ function updateCharts() {
                 data: counts.beer,
                 backgroundColor: ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'cyan', 'magenta', 'brown', 'grey']
             }]
+        },
+        options: {
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let value = data.datasets[0].data[tooltipItem.index];
+                        let label = data.labels[tooltipItem.index];
+                        return `${label}: ${value} (${calculatePercentage(value, beerTotal)}%)`;
+                    }
+                }
+            }
         }
     });
 
@@ -88,6 +134,17 @@ function updateCharts() {
                 data: counts.wine,
                 backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#ADFF2F', '#FF69B4', '#DAA520', '#8B4513', '#DC143C', '#20B2AA', '#B22222', '#4B0082', '#FF4500', '#2E8B57']
             }]
+        },
+        options: {
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let value = data.datasets[0].data[tooltipItem.index];
+                        let label = data.labels[tooltipItem.index];
+                        return `${label}: ${value} (${calculatePercentage(value, wineTotal)}%)`;
+                    }
+                }
+            }
         }
     });
 
@@ -100,8 +157,22 @@ function updateCharts() {
                 data: counts.spirits,
                 backgroundColor: ['#A52A2A', '#D2691E', '#DB7093', '#FFD700', '#8A2BE2', '#7FFF00', '#00FF7F', '#32CD32', '#FF00FF', '#1E90FF']
             }]
+        },
+        options: {
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let value = data.datasets[0].data[tooltipItem.index];
+                        let label = data.labels[tooltipItem.index];
+                        return `${label}: ${value} (${calculatePercentage(value, spiritsTotal)}%)`;
+                    }
+                }
+            }
         }
     });
+    displayWinner('beer', counts.beer, 'beerWinner');
+    displayWinner('wine', counts.wine, 'wineWinner');
+    displayWinner('spirits', counts.spirits, 'spiritWinner');
 }
 
 // Initialization code to populate the checkboxes
@@ -119,5 +190,16 @@ window.onload = function() {
             container.appendChild(label);
             container.appendChild(document.createElement('br'));
         });
+    }
+
+    // Load counts from localStorage if they exist
+    if (localStorage.getItem('beerCounts')) {
+        counts.beer = JSON.parse(localStorage.getItem('beerCounts'));
+    }
+    if (localStorage.getItem('wineCounts')) {
+        counts.wine = JSON.parse(localStorage.getItem('wineCounts'));
+    }
+    if (localStorage.getItem('spiritsCounts')) {
+        counts.spirits = JSON.parse(localStorage.getItem('spiritsCounts'));
     }
 }
